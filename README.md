@@ -1,2 +1,3 @@
-# rosalind_problems
-repo of the solutions to rosalind problems
+# Rosalind problems
+
+The problems here are part of the website rosalind.com from the Bioinfomartic stronghold.

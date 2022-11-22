@@ -6,6 +6,7 @@ Purpose: find the consensus from a multifasta
 """
 
 import argparse
+import fasta_lib
 
 
 # --------------------------------------------------
@@ -27,52 +28,58 @@ def get_args():
 
 
 # --------------------------------------------------
-def main():
-    """Make a jazz noise here"""
 
+def main():
+    """Output the consensus sequence from a multifasta (aligned)
+    and the consensus matrix 
+    The sequences must of same lengths or aligned
+    """
+    import fasta_lib
     args = get_args()
 
     file_arg = args.file
+    # fasta_test = fasta_lib.fasta_to_list(file_arg)
+    # print("fasta_test:",fasta_test)
     fasta = []
-    seq = str()
+    seq = ""
     ## open and format a fasta file
-    n = 0
-    print(file_arg.readlines())
-    fasta_list = file_arg.readlines()
-    
-    for line in fasta_list:
-        if "ATCG" in line:
-            print(line.rstrip("\n"))
-            seq = seq + str(line.rstrip("\n"))
-            print(seq)
-        if ">" or "\n" in line:
-            print(line)
-            fasta.append(seq.rstrip("\n"))
+    a = True
+    #TODO function to process fasta files
+    while a:
+        fasta_line = file_arg.readline()
+        # print(fasta_line)
+            
+        if fasta_line == "":
+            # print("appending:",seq)
+            fasta.append(seq)
+            # print("end of the file")
+            break
+        if  fasta_line[0] in "ATCG":
+            seq = seq + str(fasta_line.rstrip("\n"))
+            # print("sequence:", seq)
+        
+        if fasta_line[0] == ">":
+            # print("appending:",seq)
+            fasta.append(seq)
+            # print(seq)
             seq = ""
-    # for line in file_arg:
-    #     # if n == 0:
-    #     #     continue
-    #     if ">" not in line:
-    #         print(line.rstrip("\n"))
-    #         seq = seq + str(line.rstrip("\n"))
-    #         print(seq)
-    #     else:
-    #         print(line)
-    #     n += 1
-    print(fasta)
+            # print("header")
+            
+    # remove the first empty row      
     fasta = fasta[1:]   
-    print(fasta)
     
     consensus = ""
+    # for the final output
     final_dict = {"A": "", "C": "", "G": "", "T": ""}
+    
     for i in range(len(fasta[0])):
         dict = {"A": 0, "C": 0, "G": 0, "T": 0}
         for seq in fasta:
-            print(seq[i])
+            # print(seq[i])
             dict[seq[i]] += 1
         for key, value in dict.items():
             final_dict[key] = str(final_dict[key]) + " " + str(value)
-        print(dict)
+        # take the base with the biggest representation among sequences
         cons_base = max(dict, key=dict.get)
         consensus = consensus+cons_base
     print(consensus)
